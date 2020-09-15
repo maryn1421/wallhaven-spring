@@ -1,7 +1,5 @@
 package com.codecool.wallhaven.model;
 
-import java.lang.reflect.Field;
-
 public class BaseModel {
 
     protected int id;
