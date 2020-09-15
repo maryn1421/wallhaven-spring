@@ -15,7 +15,7 @@ CREATE TABLE uploaded_wallpaper (
     id serial NOT NULL,
     username text,
     user_id integer,
-    submission_time timestamp default current_timestamp,
+    submission_time timestamp default current_timestamp
 );
 
 
@@ -24,16 +24,16 @@ CREATE TABLE favorites (
     id serial NOT NULL,
     user_id integer,
     submission_time timestamp default current_timestamp,
-    wallpaper_id text,
+    wallpaper_id text
 );
 
 ALTER TABLE ONLY users
     ADD CONSTRAINT pk_users_id PRIMARY KEY (id);
 
-ALTER TABLE ONLY answer
+ALTER TABLE ONLY uploaded_wallpaper
     ADD CONSTRAINT pk_uploaded_wallpaper_id PRIMARY KEY (id);
 
-ALTER TABLE ONLY comment
+ALTER TABLE ONLY favorites
     ADD CONSTRAINT pk_favorites_id PRIMARY KEY (id);
 
 ALTER TABLE ONLY favorites
