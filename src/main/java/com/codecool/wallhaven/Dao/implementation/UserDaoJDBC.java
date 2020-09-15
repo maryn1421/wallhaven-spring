@@ -35,6 +35,26 @@ public class UserDaoJDBC implements UserDao {
     }
 
     @Override
+    public boolean checkLogin(String email, String password) {
+        try (Connection conn = dataSource.getConnection()) {
+            String sql = "SELECT email, password FROM users WHERE email = ? AND password = ?";
+            PreparedStatement statement = conn.prepareStatement(sql);
+            statement.setString(1, email);
+            statement.setString(2, password);
+            ResultSet resultSet = statement.executeQuery();
+            System.out.println(resultSet);
+            if (!resultSet.next()) {
+                return false;
+            }
+
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+        }
+        return true;
+    }
+
+
+    @Override
     public User getUSer() {
         return null;
     }

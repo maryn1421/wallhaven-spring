@@ -13,4 +13,5 @@ public interface UserDao {
     List<User> getAllUser();
 
 
+    boolean checkLogin(String email, String password);
 }

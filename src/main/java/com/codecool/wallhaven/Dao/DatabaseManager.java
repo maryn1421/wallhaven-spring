@@ -23,6 +23,11 @@ public class DatabaseManager {
       userDao.addUser(user);
     }
 
+    public boolean checkLogin(String email, String password) {
+        System.out.println(userDao.checkLogin(email, password));
+        return userDao.checkLogin(email, password);
+    }
+
     /*public void saveGameState(String currentMap, Player player) {
         Timestamp timestamp = new Timestamp(System.currentTimeMillis());
         Date date = new Date(timestamp.getTime());

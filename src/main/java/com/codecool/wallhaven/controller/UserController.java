@@ -11,8 +11,16 @@ import java.sql.SQLException;
 public class UserController {
     DatabaseManager dbManager;
 
+
+    @GetMapping("/login/{email}/{password}")
+    public boolean isLoginValid(@PathVariable("email") String email, @PathVariable("password") String password) {
+        setupDbManager();
+        return dbManager.checkLogin(email, password);
+
+    }
+
     @PostMapping("/register")
-    public String registerUser(@RequestBody User user){
+    public String registerUser(@RequestBody User user) {
         setupDbManager();
         dbManager.addUser(user);
         return "user";
