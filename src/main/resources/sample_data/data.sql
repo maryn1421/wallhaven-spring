@@ -2,6 +2,7 @@
 DROP TABLE IF EXISTS public.users;
 CREATE TABLE users (
     id serial NOT NULL,
+    friends integer[],
     email text,
     username text,
     password text,
