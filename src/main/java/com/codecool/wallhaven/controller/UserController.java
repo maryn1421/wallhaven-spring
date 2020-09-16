@@ -17,6 +17,8 @@ public class UserController {
     @GetMapping("/login/{email}/{password}")
     public boolean isLoginValid(@PathVariable("email") String email, @PathVariable("password") String password) {
         setupDbManager();
+        System.out.println(email);
+        System.out.println(password);
         return dbManager.checkLogin(email, password);
 
     }

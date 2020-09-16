@@ -134,7 +134,6 @@ public class UserDaoJDBC implements UserDao {
             statement.setString(1, email);
             statement.setString(2, password);
             ResultSet resultSet = statement.executeQuery();
-            System.out.println(resultSet);
             if (!resultSet.next()) {
                 return false;
             }

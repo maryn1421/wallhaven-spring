@@ -43,7 +43,6 @@ public class DatabaseManager {
 
 
     public boolean checkLogin(String email, String password) {
-        System.out.println(userDao.checkLogin(email, password));
         return userDao.checkLogin(email, password);
     }
 
