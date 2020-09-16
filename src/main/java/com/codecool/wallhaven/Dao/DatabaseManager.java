@@ -8,6 +8,7 @@ import javax.sql.DataSource;
 import java.sql.Date;
 import java.sql.SQLException;
 import java.sql.Timestamp;
+import java.util.List;
 
 public class DatabaseManager {
     private UserDao userDao;
@@ -22,6 +23,24 @@ public class DatabaseManager {
     public void addUser(User user) {
       userDao.addUser(user);
     }
+
+    public List<User> getFriendsById(int id) {
+        return userDao.getFriendsById(id);
+    }
+
+    public List<User> getFriendsList() {
+        return userDao.getFriendsById(1);
+    }
+
+    public void addFriend(int userId, int friendId) {
+        userDao.addFriend(userId, friendId);
+    }
+
+    public User getUserById (int id) {
+        return userDao.getUserById(id);
+    }
+
+
 
     public boolean checkLogin(String email, String password) {
         System.out.println(userDao.checkLogin(email, password));
@@ -54,5 +73,14 @@ public class DatabaseManager {
         System.out.println("Connection ok.");
 
         return dataSource;
+    }
+
+    public List<User> getAllUser() {
+        return userDao.getAllUser();
+
+    }
+
+    public String getIdByEmail (String email) {
+        return userDao.getIdByEmail(email);
     }
 }
