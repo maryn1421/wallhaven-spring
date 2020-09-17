@@ -82,4 +82,8 @@ public class DatabaseManager {
     public String getIdByEmail (String email) {
         return userDao.getIdByEmail(email);
     }
+
+    public String getUsernameByEmail(String email) {
+        return userDao.getUsernameByEmail(email);
+    }
 }
