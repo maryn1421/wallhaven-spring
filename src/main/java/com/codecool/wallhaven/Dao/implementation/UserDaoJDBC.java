@@ -209,9 +209,6 @@ public class UserDaoJDBC implements UserDao {
             PreparedStatement statement = conn.prepareStatement(sql);
             statement.setInt(1, userID);
             ResultSet resultSet = statement.executeQuery();
-            if (!resultSet.next()) {
-                return null;
-            };
             while (resultSet.next()) {
                 String wallpaperId = resultSet.getString(1);
                 PictureIDs.add(wallpaperId);
@@ -220,7 +217,7 @@ public class UserDaoJDBC implements UserDao {
         } catch(SQLException e) {
             throw new RuntimeException(e);
         }
-
+        PictureIDs.forEach(System.out::println);;
         return PictureIDs;
     }
 
