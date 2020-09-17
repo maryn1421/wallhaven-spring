@@ -86,4 +86,12 @@ public class DatabaseManager {
     public String getUsernameByEmail(String email) {
         return userDao.getUsernameByEmail(email);
     }
+
+    public boolean isWallpaperFavorite(int id, String wallpaperId) {
+        return userDao.isWallpaperFavorite(id, wallpaperId);
+    }
+
+    public void addFavorite(int id, String wallpaperId) {
+        userDao.addFavorite(id, wallpaperId);
+    }
 }

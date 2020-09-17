@@ -163,6 +163,43 @@ public class UserDaoJDBC implements UserDao {
     }
 
     @Override
+    public boolean isWallpaperFavorite(int id, String wallpaperId) {
+        boolean favorite = false;
+        try (Connection conn = dataSource.getConnection()) {
+            String sql = "SELECT user_id, wallpaper_id FROM favorites WHERE user_id = ? AND wallpaper_id = ?";
+            PreparedStatement statement = conn.prepareStatement(sql);
+            statement.setInt(1, id);
+            statement.setString(2, wallpaperId);
+            ResultSet resultSet = statement.executeQuery();
+            if (!resultSet.next()) {
+                return false;
+            }
+            favorite = true;
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+        }
+
+        return favorite;
+    }
+
+    @Override
+    public void addFavorite(int id, String wallpaperId) {
+        try (Connection conn = dataSource.getConnection()) {
+            String sql = "INSERT INTO favorites (user_id, wallpaper_id) VALUES (?, ?)";
+            PreparedStatement statement = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
+            Array array = conn.createArrayOf("Integer", new Object[]{});
+            statement.setInt(1, id);
+            statement.setString(2, wallpaperId);
+            statement.executeUpdate();
+            ResultSet resultSet = statement.getGeneratedKeys();
+            resultSet.next();
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+
+    }
+
+    @Override
     public User getUSer() {
         return null;
     }

@@ -116,4 +116,18 @@ public class UserController {
             System.out.println("Cannot connect to database.");
         }
     }
+
+
+    @GetMapping("/favorite/{id}/{wallpaper_id}")
+    public boolean isWallpaperFavorite(@PathVariable("id") int id, @PathVariable("wallpaper_id") String wallpaperId) {
+        setupDbManager();
+        return dbManager.isWallpaperFavorite(id, wallpaperId);
+    }
+
+    @PostMapping("/addfavorite/{id}/{wallpaper_id}")
+    public String addToFavorite(@PathVariable("id") int id, @PathVariable("wallpaper_id") String wallpaperId) {
+        setupDbManager();
+        dbManager.addFavorite(id, wallpaperId);
+        return "asd";
+    }
 }
