@@ -200,6 +200,26 @@ public class UserDaoJDBC implements UserDao {
     }
 
     @Override
+    public void addWallpaper(int id, String image) {
+        image = image.replace("\"{", "");
+        image = image.replace("}", "");
+        image = image.replace("{\"image\":", "");
+        image = image.replace("\"", "");
+
+        try (Connection conn = dataSource.getConnection()) {
+            String sql = "INSERT INTO uploaded_wallpaper (user_id, wallpaper) VALUES (?, ?)";
+            PreparedStatement statement = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
+            statement.setInt(1, id);
+            statement.setString(2, image);
+            statement.executeUpdate();
+            ResultSet resultSet = statement.getGeneratedKeys();
+            resultSet.next();
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    @Override
     public User getUSer() {
         return null;
     }

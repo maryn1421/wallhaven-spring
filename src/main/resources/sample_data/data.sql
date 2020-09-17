@@ -23,7 +23,7 @@ CREATE TABLE users (
 DROP TABLE IF EXISTS public.uploaded_wallpaper;
 CREATE TABLE uploaded_wallpaper (
     id serial NOT NULL,
-    username text,
+    wallpaper text,
     user_id integer,
     submission_time timestamp default current_timestamp
 );

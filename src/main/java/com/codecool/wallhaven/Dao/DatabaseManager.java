@@ -91,7 +91,14 @@ public class DatabaseManager {
         return userDao.isWallpaperFavorite(id, wallpaperId);
     }
 
+
+
+
     public void addFavorite(int id, String wallpaperId) {
         userDao.addFavorite(id, wallpaperId);
+    }
+
+    public void addWallpaper(int id, String image) {
+        userDao.addWallpaper(id, image);
     }
 }

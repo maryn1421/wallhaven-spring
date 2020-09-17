@@ -24,4 +24,6 @@ public interface UserDao {
     boolean isWallpaperFavorite(int id, String wallpaperId);
 
     void addFavorite(int id, String wallpaperId);
+
+    void addWallpaper(int id, String image);
 }

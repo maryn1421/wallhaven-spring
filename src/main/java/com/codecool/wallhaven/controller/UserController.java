@@ -130,4 +130,12 @@ public class UserController {
         dbManager.addFavorite(id, wallpaperId);
         return "asd";
     }
+
+    @PostMapping("/addwallpaper/{id}")
+    public String addPicture(@PathVariable("id") int id, @RequestBody String image){
+        setupDbManager();
+        dbManager.addWallpaper(id, image);
+
+        return "post was successfully";
+    }
 }
