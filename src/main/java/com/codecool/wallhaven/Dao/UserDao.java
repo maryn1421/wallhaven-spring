@@ -20,4 +20,8 @@ public interface UserDao {
     String getIdByEmail(String email);
 
     String getUsernameByEmail(String email);
+
+    boolean isWallpaperFavorite(int id, String wallpaperId);
+
+    void addFavorite(int id, String wallpaperId);
 }
