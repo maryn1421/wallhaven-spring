@@ -145,4 +145,12 @@ public class UserController {
 
         return "post was successfully";
     }
+
+    @GetMapping("/uploaded/{id}")
+    public List<String> getUploaded(@PathVariable("id") int id) {
+        setupDbManager();
+        return dbManager.getUploaded(id);
+    }
+
+
 }

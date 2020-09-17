@@ -28,4 +28,6 @@ public interface UserDao {
     void addFavorite(int id, String wallpaperId);
 
     void addWallpaper(int id, String image);
+
+    List<String> getUploaded(int id);
 }

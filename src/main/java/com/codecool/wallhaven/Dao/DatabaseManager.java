@@ -102,4 +102,8 @@ public class DatabaseManager {
     public List<String> getFavouritesByUserID(int userID) {
         return userDao.getFavouritesByUserID(userID);
     }
+
+    public List<String> getUploaded(int id) {
+        return userDao.getUploaded(id);
+    }
 }

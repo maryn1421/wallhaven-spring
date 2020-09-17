@@ -220,6 +220,24 @@ public class UserDaoJDBC implements UserDao {
     }
 
 
+    @Override
+    public List<String> getUploaded(int id) {
+        List<String> wallpapers = new ArrayList<>();
+        try (Connection conn = dataSource.getConnection()) {
+            String sql = "SELECT wallpaper FROM uploaded_wallpaper WHERE user_id = ?";
+            PreparedStatement statement = conn.prepareStatement(sql);
+            statement.setInt(1, id);
+            ResultSet resultSet = statement.executeQuery();
+            while (resultSet.next()) {
+                String wallpaper = resultSet.getString(1);
+                wallpapers.add(wallpaper);
+            }
+
+        } catch(SQLException e) {
+            throw new RuntimeException(e);
+        }
+        return wallpapers;
+    }
 
     @Override
     public void addWallpaper(int id, String image) {
