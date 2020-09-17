@@ -18,4 +18,6 @@ public interface UserDao {
 
     User getUserById(int id);
     String getIdByEmail(String email);
+
+    String getUsernameByEmail(String email);
 }

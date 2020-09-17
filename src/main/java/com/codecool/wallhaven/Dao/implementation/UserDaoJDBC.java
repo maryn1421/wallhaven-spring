@@ -134,7 +134,6 @@ public class UserDaoJDBC implements UserDao {
             statement.setString(1, email);
             statement.setString(2, password);
             ResultSet resultSet = statement.executeQuery();
-            System.out.println(resultSet);
             if (!resultSet.next()) {
                 return false;
             }
@@ -145,6 +144,23 @@ public class UserDaoJDBC implements UserDao {
         return true;
     }
 
+    @Override
+    public String getUsernameByEmail(String email) {
+        String username = "";
+        try (Connection connection = dataSource.getConnection()) {
+            String sql = "SELECT username FROM users WHERE email = ?";
+            PreparedStatement statement = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
+            statement.setString(1, email);
+            ResultSet resultSet = statement.executeQuery();
+            if (!resultSet.next()) {
+                return email;
+            }
+            username = resultSet.getString(1);
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+        }
+        return username;
+    }
 
     @Override
     public User getUSer() {

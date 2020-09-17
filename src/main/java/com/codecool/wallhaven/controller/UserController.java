@@ -17,6 +17,8 @@ public class UserController {
     @GetMapping("/login/{email}/{password}")
     public boolean isLoginValid(@PathVariable("email") String email, @PathVariable("password") String password) {
         setupDbManager();
+        System.out.println(email);
+        System.out.println(password);
         return dbManager.checkLogin(email, password);
 
     }
@@ -89,6 +91,12 @@ public class UserController {
         setupDbManager();
         System.out.println(email);
         return dbManager.getIdByEmail(email);
+    }
+
+    @GetMapping("/username/{email}")
+    public String getUsernameByEmail(@PathVariable("email") String email) {
+        setupDbManager();
+        return dbManager.getUsernameByEmail(email);
     }
 
     private void setupDbManager() {
