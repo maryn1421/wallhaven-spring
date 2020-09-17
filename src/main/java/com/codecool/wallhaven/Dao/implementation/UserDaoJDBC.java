@@ -200,6 +200,28 @@ public class UserDaoJDBC implements UserDao {
     }
 
     @Override
+    public List<String> getFavouritesByUserID(int userID) {
+        List<String> PictureIDs = new ArrayList<>();
+        try (Connection conn = dataSource.getConnection()) {
+            String sql = "SELECT wallpaper_id FROM favorites WHERE user_id = ?";
+            PreparedStatement statement = conn.prepareStatement(sql);
+            statement.setInt(1, userID);
+            ResultSet resultSet = statement.executeQuery();
+            while (resultSet.next()) {
+                String wallpaperId = resultSet.getString(1);
+                PictureIDs.add(wallpaperId);
+            }
+
+        } catch(SQLException e) {
+            throw new RuntimeException(e);
+        }
+        PictureIDs.forEach(System.out::println);;
+        return PictureIDs;
+    }
+
+
+
+    @Override
     public void addWallpaper(int id, String image) {
         image = image.replace("\"{", "");
         image = image.replace("}", "");
