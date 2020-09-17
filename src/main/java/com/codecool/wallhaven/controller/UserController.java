@@ -141,14 +141,6 @@ public class UserController {
     @PostMapping("/addwallpaper/{id}")
     public String addPicture(@PathVariable("id") int id, @RequestBody String image){
         setupDbManager();
-      //  dbManager.addWallpaper(id, image);
-
-        return "post was successfully";
-    }
-
-    @PostMapping("/addwallpaper/{id}")
-    public String addPicture(@PathVariable("id") int id, @RequestBody String image){
-        setupDbManager();
         dbManager.addWallpaper(id, image);
 
         return "post was successfully";
