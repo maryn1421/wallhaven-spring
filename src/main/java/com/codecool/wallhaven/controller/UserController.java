@@ -99,6 +99,13 @@ public class UserController {
         return dbManager.getUsernameByEmail(email);
     }
 
+    @GetMapping("/profile/{id}")
+    public List<User> getFriendsById(@PathVariable("id") String id) {
+        setupDbManager();
+        int userID = Integer.parseInt(id);
+        return dbManager.getFriendsById(userID);
+    }
+
     private void setupDbManager() {
         dbManager = new DatabaseManager();
         try {
