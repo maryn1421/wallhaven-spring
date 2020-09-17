@@ -2,6 +2,7 @@ package com.codecool.wallhaven.Dao.implementation;
 
 import com.codecool.wallhaven.Dao.UserDao;
 import com.codecool.wallhaven.model.User;
+import org.springframework.stereotype.Component;
 
 import javax.sql.DataSource;
 import java.sql.*;
@@ -9,6 +10,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
+
 
 public class UserDaoJDBC implements UserDao {
     private DataSource dataSource;
@@ -210,12 +212,10 @@ public class UserDaoJDBC implements UserDao {
             if (!resultSet.next()) {
                 return null;
             };
-            Array array = resultSet.getArray(4);
-            String[] stringIDs = (String[]) array.getArray();
-            List<String> StringPictureIDs = Arrays.asList(stringIDs);
-            System.out.println(StringPictureIDs);
-
-            PictureIDs.addAll(StringPictureIDs);
+            while (resultSet.next()) {
+                String wallpaperId = resultSet.getString(1);
+                PictureIDs.add(wallpaperId);
+            }
 
         } catch(SQLException e) {
             throw new RuntimeException(e);

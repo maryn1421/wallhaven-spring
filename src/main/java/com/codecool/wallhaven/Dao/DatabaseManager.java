@@ -3,6 +3,7 @@ package com.codecool.wallhaven.Dao;
 import com.codecool.wallhaven.Dao.implementation.UserDaoJDBC;
 import com.codecool.wallhaven.model.User;
 import org.postgresql.ds.PGSimpleDataSource;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.sql.DataSource;
 import java.sql.Date;
@@ -11,6 +12,7 @@ import java.sql.Timestamp;
 import java.util.List;
 
 public class DatabaseManager {
+
     private UserDao userDao;
    // private GameStateDao  gameStateDao;
 
