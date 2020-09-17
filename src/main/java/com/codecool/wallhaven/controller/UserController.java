@@ -108,6 +108,13 @@ public class UserController {
         return dbManager.getFriendsById(userID);
     }
 
+    @GetMapping("/profile/favourites/{id}")
+    public List<String> getFavouritesByUserID(@PathVariable("id") String id) {
+        setupDbManager();
+        int userID = Integer.parseInt(id);
+        return dbManager.getFavouritesByUserID(userID);
+    }
+
     private void setupDbManager() {
         dbManager = new DatabaseManager();
         try {

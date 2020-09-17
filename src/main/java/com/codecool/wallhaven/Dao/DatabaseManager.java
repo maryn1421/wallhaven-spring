@@ -94,4 +94,8 @@ public class DatabaseManager {
     public void addFavorite(int id, String wallpaperId) {
         userDao.addFavorite(id, wallpaperId);
     }
+
+    public List<String> getFavouritesByUserID(int userID) {
+        return userDao.getFavouritesByUserID(userID);
+    }
 }

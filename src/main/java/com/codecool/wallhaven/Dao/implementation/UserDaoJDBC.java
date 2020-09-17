@@ -200,6 +200,33 @@ public class UserDaoJDBC implements UserDao {
     }
 
     @Override
+    public List<String> getFavouritesByUserID(int userID) {
+        List<String> PictureIDs = new ArrayList<>();
+        try (Connection conn = dataSource.getConnection()) {
+            String sql = "SELECT wallpaper_id FROM favorites WHERE user_id = ?";
+            PreparedStatement statement = conn.prepareStatement(sql);
+            statement.setInt(1, userID);
+            ResultSet resultSet = statement.executeQuery();
+            if (!resultSet.next()) {
+                return null;
+            };
+            Array array = resultSet.getArray(4);
+            String[] stringIDs = (String[]) array.getArray();
+            List<String> StringPictureIDs = Arrays.asList(stringIDs);
+            System.out.println(StringPictureIDs);
+
+            PictureIDs.addAll(StringPictureIDs);
+
+        } catch(SQLException e) {
+            throw new RuntimeException(e);
+        }
+
+        return PictureIDs;
+    }
+
+
+
+    @Override
     public User getUSer() {
         return null;
     }
