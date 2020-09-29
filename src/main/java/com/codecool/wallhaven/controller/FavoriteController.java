@@ -2,7 +2,6 @@ package com.codecool.wallhaven.controller;
 
 
 import com.codecool.wallhaven.model.Favorite;
-import com.codecool.wallhaven.model.UploadedWallpaper;
 import com.codecool.wallhaven.model.User;
 import com.codecool.wallhaven.repository.FavoriteRepository;
 import com.codecool.wallhaven.repository.UserRepository;
