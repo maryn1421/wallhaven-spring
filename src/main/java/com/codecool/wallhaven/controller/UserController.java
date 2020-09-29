@@ -1,156 +1,164 @@
 package com.codecool.wallhaven.controller;
 
-import com.codecool.wallhaven.Dao.DatabaseManager;
 import com.codecool.wallhaven.model.User;
+import com.codecool.wallhaven.repository.UserRepository;
+import com.codecool.wallhaven.service.UserService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 //nb
-
+//separate
+//debugger, use logger
+//calletupdb in constructor
+//use di
 @RestController
 @CrossOrigin(origins = "*", allowedHeaders = "*")
 public class UserController {
-    DatabaseManager dbManager;
 
+    @Autowired
+    UserRepository userRepository;
 
-    @GetMapping("/login/{email}/{password}")
-    public boolean isLoginValid(@PathVariable("email") String email, @PathVariable("password") String password) {
-        setupDbManager();
-        System.out.println(email);
-        System.out.println(password);
-        return dbManager.checkLogin(email, password);
+    @Autowired
+    UserService userService;
 
-    }
 
     @GetMapping("/users/{id}")
-    public List<User> getAllUser(@PathVariable("id") String id) {
-        setupDbManager();
-        int userId = Integer.parseInt(id);
-        List<User> friends = dbManager.getFriendsById(userId);
-        System.out.println(friends);
-        List<User> allUser = dbManager.getAllUser();
-        System.out.println(allUser);
-        List<User> returnUsers = new ArrayList<>();
-        //User activeUser = dbManager.getUserById(userId);
-        /*
+    public List<User> getAvailableUsers(@PathVariable("id") String id) {
+        User byId = userRepository.findById(Long.parseLong(id)).get();
+        List<Long> friendIds = byId.getFriends();
+        List<User> friends = new ArrayList<>();
+
+        friendIds.forEach(id1 -> {
+            Optional<User> fri = userRepository.findById(id1);
+            fri.ifPresent(friends::add);
+        });
+
+
+        List<User> allUser = userRepository.findAll();
+        List<User> suggested = new ArrayList<>();
         allUser.forEach(user -> {
-            if (user.getId() == Integer.parseInt(id)) {
-                allUser.remove(user);
+            if (!friends.contains(user) && Long.parseLong(id) != user.getId()) {
+                suggested.add(user);
             }
         });
-        friends.forEach(friend -> {
-            int actualId = friend.getId();
-            allUser.forEach(user -> {
-                if (user.getId() == actualId) {
-                    allUser.remove(user);
-                }
-            });
+        return suggested;
 
-        });
-                 */
-
-        List<Integer> friendIds = new ArrayList<>();
-        friends.forEach(friend -> {
-            friendIds.add(friend.getId());
-        });
-        allUser.forEach(user -> {
-            if (!friendIds.contains(user.getId()) && user.getId() != userId) {
-                returnUsers.add(user);
-            }
-        });
-
-        return returnUsers;
     }
 
 
-    @GetMapping("/friendlist")
-    public List<User> getFriendList() {
-        setupDbManager();
-        return dbManager.getFriendsList();
+    @PostMapping("/test")
+    public String test(@RequestBody User user) {
+        userRepository.save(user);
+        return "halika";
     }
 
     @PostMapping("/addFriend/{userId}/{friendId}")
     public void addFriend(@PathVariable String userId, @PathVariable String friendId) {
-        System.out.println("ui:  " + userId);
-        System.out.println("fi:  " + friendId);
-        setupDbManager();
-        //List<User> friends = dbManager.getFriendsById(Integer.parseInt(userId));
-        dbManager.addFriend(Integer.parseInt(userId), Integer.parseInt(friendId));
+        System.out.println(userId);
+        Optional<User> user = userRepository.findById(Long.parseLong(userId));
+        Optional<User> friend = userRepository.findById(Long.parseLong(friendId));
+
+        if (user.isPresent() && friend.isPresent()) {
+            user.get().getFriends().add(friend.get().getId());
+            userRepository.save(user.get());
+        }
     }
 
-    @PostMapping("/register")
-    public String registerUser(@RequestBody User user) {
-        setupDbManager();
-        dbManager.addUser(user);
-        return "user";
+    @GetMapping("/test1")
+    public String test1() {
+        Optional<User> user = userRepository.findById(Long.parseLong("11"));
+        user.ifPresent(value -> System.out.println(value.getFriends()));
+        return "fine";
     }
 
-    @GetMapping("/id/{email}")
-    public String getIdByEmail(@PathVariable("email") String email) {
-        setupDbManager();
-        System.out.println(email);
-        return dbManager.getIdByEmail(email);
+    @GetMapping("/test2")
+    public String test2() {
+        Optional<User> user = userRepository.findById(Long.parseLong("11"));
+        Optional<User> user2 = userRepository.findById(Long.parseLong("8"));
+     //   user.ifPresent(value -> value.getFriends().add(user2.get()));
+        return "fine";
     }
 
-    @GetMapping("/username/{email}")
-    public String getUsernameByEmail(@PathVariable("email") String email) {
-        setupDbManager();
-        return dbManager.getUsernameByEmail(email);
+    @GetMapping("/login/{email}/{password}")
+    public boolean isLoginValid(@PathVariable("email") String email, @PathVariable("password") String password) {
+        User user = userService.findByUsername(email);
+        return user.getPassword().equals(password);
     }
 
-    @GetMapping("/profile/{id}")
-    public List<User> getFriendsById(@PathVariable("id") String id) {
-        setupDbManager();
-        int userID = Integer.parseInt(id);
-        return dbManager.getFriendsById(userID);
-    }
 
-    @GetMapping("/profile/favourites/{id}")
-    public List<String> getFavouritesByUserID(@PathVariable("id") String id) {
-        setupDbManager();
-        int userID = Integer.parseInt(id);
-        return dbManager.getFavouritesByUserID(userID);
-    }
 
-    private void setupDbManager() {
-        dbManager = new DatabaseManager();
-        try {
-            dbManager.setup();
-        } catch (SQLException ex) {
-            System.out.println("Cannot connect to database.");
+    @GetMapping("/friends/{id}")
+    public List<User> getFriends(@PathVariable("id") String id) {
+        Optional<User> byId = userRepository.findById(Long.parseLong(id));
+        if (byId.isPresent()) {
+            List<Long> friendIds = byId.get().getFriends();
+            List<User> friends = new ArrayList<>();
+
+            friendIds.forEach(id1 -> {
+                Optional<User> fri = userRepository.findById(id1);
+                fri.ifPresent(friends::add);
+            });
+           return friends;
+        } else {
+            return new ArrayList<>();
         }
     }
 
 
-    @GetMapping("/favorite/{id}/{wallpaper_id}")
-    public boolean isWallpaperFavorite(@PathVariable("id") int id, @PathVariable("wallpaper_id") String wallpaperId) {
-        setupDbManager();
-        return dbManager.isWallpaperFavorite(id, wallpaperId);
+
+    @GetMapping("/alluser")
+    public List<User> getAllUser() {
+        return userRepository.findAll();
     }
 
-    @PostMapping("/addfavorite/{id}/{wallpaper_id}")
-    public String addToFavorite(@PathVariable("id") int id, @PathVariable("wallpaper_id") String wallpaperId) {
-        setupDbManager();
-        dbManager.addFavorite(id, wallpaperId);
-        return "asd";
+    @PostMapping("/register")
+    public String registerUser(@RequestBody User user) {
+        userRepository.save(user);
+        return "user";
+
     }
 
-    @PostMapping("/addwallpaper/{id}")
-    public String addPicture(@PathVariable("id") int id, @RequestBody String image){
-        setupDbManager();
-        dbManager.addWallpaper(id, image);
-
-        return "post was successfully";
+    @GetMapping("/profile/{id}")
+    public List<User> getFriendsById(@PathVariable("id") String id) {
+        return userService.getFriendsById(Long.parseLong(id));
     }
 
-    @GetMapping("/uploaded/{id}")
-    public List<String> getUploaded(@PathVariable("id") int id) {
+/*
+
+
+    @GetMapping("/username/{email}")
+    public String getUsernameByEmail(@PathVariable("email") String email) {
+        return userRepository.findByEmail(email).getName();}
+
+
+
+    }
+
+         */
+
+    /*
+    @GetMapping("/id/{email}")
+    public String getIdByEmail(@PathVariable("email") String email) {
         setupDbManager();
-        return dbManager.getUploaded(id);
+        return dbManager.getIdByEmail(email);
     }
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+    */
 }
