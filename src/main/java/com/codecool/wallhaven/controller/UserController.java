@@ -127,6 +127,11 @@ public class UserController {
         return userService.getFriendsById(Long.parseLong(id));
     }
 
+    @GetMapping("/friend/{id}")
+    public Optional<User> getUserById(@PathVariable("id") String id) {
+        return userRepository.findById(Long.parseLong(id));
+    }
+
 /*
 
 
