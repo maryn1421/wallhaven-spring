@@ -10,11 +10,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-//nb
-//separate
-//debugger, use logger
-//calletupdb in constructor
-//use di
+
 @RestController
 @CrossOrigin(origins = "*", allowedHeaders = "*")
 public class UserController {
@@ -49,13 +45,6 @@ public class UserController {
 
     }
 
-
-    @PostMapping("/test")
-    public String test(@RequestBody User user) {
-        userRepository.save(user);
-        return "halika";
-    }
-
     @PostMapping("/addFriend/{userId}/{friendId}")
     public void addFriend(@PathVariable String userId, @PathVariable String friendId) {
         System.out.println(userId);
@@ -68,28 +57,12 @@ public class UserController {
         }
     }
 
-    @GetMapping("/test1")
-    public String test1() {
-        Optional<User> user = userRepository.findById(Long.parseLong("11"));
-        user.ifPresent(value -> System.out.println(value.getFriends()));
-        return "fine";
-    }
-
-    @GetMapping("/test2")
-    public String test2() {
-        Optional<User> user = userRepository.findById(Long.parseLong("11"));
-        Optional<User> user2 = userRepository.findById(Long.parseLong("8"));
-     //   user.ifPresent(value -> value.getFriends().add(user2.get()));
-        return "fine";
-    }
 
     @GetMapping("/login/{email}/{password}")
     public boolean isLoginValid(@PathVariable("email") String email, @PathVariable("password") String password) {
         User user = userService.findByUsername(email);
         return user.getPassword().equals(password);
     }
-
-
 
     @GetMapping("/friends/{id}")
     public List<User> getFriends(@PathVariable("id") String id) {
@@ -108,8 +81,6 @@ public class UserController {
         }
     }
 
-
-
     @GetMapping("/alluser")
     public List<User> getAllUser() {
         return userRepository.findAll();
@@ -127,38 +98,47 @@ public class UserController {
         return userService.getFriendsById(Long.parseLong(id));
     }
 
-/*
-
-
-    @GetMapping("/username/{email}")
-    public String getUsernameByEmail(@PathVariable("email") String email) {
-        return userRepository.findByEmail(email).getName();}
-
-
-
+    @GetMapping("/data/{id}")
+    public User getUserDataById(@PathVariable("id") String id) {
+        return userRepository.findById(Long.parseLong(id)).get();
     }
 
-         */
-
-    /*
-    @GetMapping("/id/{email}")
-    public String getIdByEmail(@PathVariable("email") String email) {
-        setupDbManager();
-        return dbManager.getIdByEmail(email);
+    @GetMapping("/available/email/{email}")
+    public boolean isEmailAvailable(@PathVariable("email") String email) {
+        Optional<User> byEmail = userRepository.findByEmail(email);
+        return byEmail.isPresent();
     }
 
+    @GetMapping("/available/name/{name}")
+    public boolean isNameAvailable(@PathVariable("name") String name) {
+        Optional<User> username = userRepository.findByName(name);
+        return username.isPresent();
+    }
 
+    @PostMapping("/update/name/{name}/{id}")
+    public String updateName(@PathVariable("name") String name, @PathVariable("id") String id) {
+        Optional<User> username = userRepository.findByName(name);
+        if (username.isEmpty()) {
+            Optional<User> user = userRepository.findById(Long.parseLong(id));
+            if (user.isPresent()){
+                user.get().setName(name);
+                userRepository.save(user.get());
+            }
+        }
+        return "update was successful";
+    }
 
+    @PostMapping("/update/email/{email}/{id}")
+    public String updateEmail(@PathVariable("email")String email, @PathVariable("id") String id) {
+        Optional<User> user1 = userRepository.findByEmail(email);
+        if (user1.isEmpty()) {
+            Optional<User> user = userRepository.findById(Long.parseLong(id));
+            if (user.isPresent()){
+                user.get().setEmail(email);
+                userRepository.save(user.get());
+            }
+        }
+        return "update was successful";
+    }
 
-
-
-
-
-
-
-
-
-
-
-    */
 }
