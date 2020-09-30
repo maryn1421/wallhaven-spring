@@ -28,6 +28,12 @@ public class FavoriteController {
         return user.map(value -> favoriteRepository.findAllByUserId(value)).orElse(new ArrayList<>());
     }
 
+    @GetMapping("/friend/favourites/{id}")
+    public List<Favorite> getFriendsFavouritesByUserID(@PathVariable("id") String id) {
+        Optional<User> user = userRepository.findById(Long.parseLong(id));
+        return user.map(value -> favoriteRepository.findAllByUserId(value)).orElse(new ArrayList<>());
+    }
+
     @PostMapping("/addfavorite/{id}/{wallpaper_id}")
     public String addToFavorite(@PathVariable("id") String id, @PathVariable("wallpaper_id") String wallpaperId) {
         Optional<User> user = userRepository.findById(Long.parseLong(id));
