@@ -9,10 +9,11 @@ import com.codecool.wallhaven.repository.UploadedWallpaperRepository;
 import com.codecool.wallhaven.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import java.io.File;
+import java.io.IOException;
+import java.util.*;
 
 @RestController
 @CrossOrigin(origins = "*", allowedHeaders = "*")
@@ -47,6 +48,20 @@ public class UploadedController {
             UploadedWallpaper uploadedWallpaper = UploadedWallpaper.builder().Link(image).userId(user.get()).build();
             uploadedWallpaperRepository.save(uploadedWallpaper);
         }
+        return "post was successfully";
+    }
+
+    @RequestMapping(method = RequestMethod.POST, value = "/uploadwallpaper/{id}")
+    public String uploadWallpaper(@PathVariable("id") String id, @RequestParam("file") MultipartFile file) {
+        File path = new File("/resources/images/" + file.getOriginalFilename());
+
+        try {
+            file.transferTo(path);
+            return "Upload successful";
+        } catch (IllegalStateException | IOException e) {
+            e.printStackTrace();
+        }
+
         return "post was successfully";
     }
 
