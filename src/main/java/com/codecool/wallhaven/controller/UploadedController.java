@@ -28,6 +28,7 @@ import java.util.*;
 @CrossOrigin(origins = "*", allowedHeaders = "*")
 public class UploadedController {
 
+
     @Autowired
     UserRepository userRepository;
 
@@ -99,5 +100,6 @@ public class UploadedController {
             return "Error";
         }
     }
+
 
 }
