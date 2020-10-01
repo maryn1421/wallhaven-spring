@@ -57,13 +57,6 @@ public class UserController {
         }
     }
 
-
-    @GetMapping("/login/{email}/{password}")
-    public boolean isLoginValid(@PathVariable("email") String email, @PathVariable("password") String password) {
-        User user = userService.findByUsername(email);
-        return user.getPassword().equals(password);
-    }
-
     @GetMapping("/friends/{id}")
     public List<User> getFriends(@PathVariable("id") String id) {
         Optional<User> byId = userRepository.findById(Long.parseLong(id));
@@ -139,6 +132,17 @@ public class UserController {
             }
         }
         return "update was successful";
+    }
+
+
+    @GetMapping("/login/{email}/{password}")
+    public boolean login1(@PathVariable("email") String email, @PathVariable("password") String password){
+        return userRepository.findByEmailAndAndPassword(email, password).isPresent();
+    }
+
+    @GetMapping("/login/{email}")
+    public User getUserByEmail(@PathVariable("email") String email) {
+        return userRepository.findByEmail(email).get();
     }
 
 }
