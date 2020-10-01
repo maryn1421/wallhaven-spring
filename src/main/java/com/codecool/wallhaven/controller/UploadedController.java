@@ -13,6 +13,9 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.*;
 
 @RestController
@@ -53,16 +56,36 @@ public class UploadedController {
 
     @RequestMapping(method = RequestMethod.POST, value = "/uploadwallpaper/{id}")
     public String uploadWallpaper(@PathVariable("id") String id, @RequestParam("file") MultipartFile file) {
-        File path = new File("/resources/images/" + file.getOriginalFilename());
 
-        try {
-            file.transferTo(path);
-            return "Upload successful";
-        } catch (IllegalStateException | IOException e) {
-            e.printStackTrace();
+        String absolutePathDirectory = "src/main/resources/images/";
+
+        File absolutePathFile = new File(absolutePathDirectory);
+        String absolutePath = absolutePathFile.getAbsolutePath();
+
+        if (!file.isEmpty()) {
+            try {
+                String filePath = absolutePath + "/" + Objects.requireNonNull(file.getOriginalFilename()).replace(" ", "_");
+
+                File dest = new File(filePath);
+                file.transferTo(dest.toPath());
+                System.out.println("success");
+
+                Optional<User> user = userRepository.findById(Long.parseLong(id));
+                if (user.isPresent()) {
+                    UploadedWallpaper uploadedWallpaper = UploadedWallpaper.builder().Link(filePath).userId(user.get()).build();
+                    uploadedWallpaperRepository.save(uploadedWallpaper);
+                }
+                return "success";
+            }
+            catch (Exception ex) {
+                System.out.println(ex);
+                return "Exception error";
+            }
         }
-
-        return "post was successfully";
+        else {
+            System.out.println("error");
+            return "Error";
+        }
     }
 
 }
