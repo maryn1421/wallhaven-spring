@@ -7,10 +7,16 @@ import com.codecool.wallhaven.model.User;
 import com.codecool.wallhaven.repository.FavoriteRepository;
 import com.codecool.wallhaven.repository.UploadedWallpaperRepository;
 import com.codecool.wallhaven.repository.UserRepository;
+import org.apache.maven.surefire.shade.org.apache.commons.io.IOUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.activation.FileTypeMap;
+import javax.imageio.ImageIO;
+import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
@@ -54,6 +60,12 @@ public class UploadedController {
         return "post was successfully";
     }
 
+    @GetMapping("/image/{name}")
+    public ResponseEntity<byte[]> getImage1(@PathVariable String name) throws IOException{
+        File img = new File("src/main/resources/images/" + name);
+        return ResponseEntity.ok().contentType(MediaType.valueOf(FileTypeMap.getDefaultFileTypeMap().getContentType(img))).body(Files.readAllBytes(img.toPath()));
+    }
+
     @RequestMapping(method = RequestMethod.POST, value = "/uploadwallpaper/{id}")
     public String uploadWallpaper(@PathVariable("id") String id, @RequestParam("file") MultipartFile file) {
 
@@ -72,7 +84,7 @@ public class UploadedController {
 
                 Optional<User> user = userRepository.findById(Long.parseLong(id));
                 if (user.isPresent()) {
-                    UploadedWallpaper uploadedWallpaper = UploadedWallpaper.builder().Link(filePath).userId(user.get()).build();
+                    UploadedWallpaper uploadedWallpaper = UploadedWallpaper.builder().Link(file.getOriginalFilename().replace(" ", "_")).userId(user.get()).build();
                     uploadedWallpaperRepository.save(uploadedWallpaper);
                 }
                 return "success";
