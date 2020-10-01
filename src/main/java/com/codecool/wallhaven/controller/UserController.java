@@ -103,21 +103,19 @@ public class UserController {
     @GetMapping("/data/{id}")
     public User getUserDataById(@PathVariable("id") String id) {
         return userRepository.findById(Long.parseLong(id)).get();
+    }
     @GetMapping("/friend/{id}")
     public Optional<User> getUserById(@PathVariable("id") String id) {
         return userRepository.findById(Long.parseLong(id));
     }
 
-/*
 
 
     @GetMapping("/username/{email}")
     public String getUsernameByEmail(@PathVariable("email") String email) {
-        return userRepository.findByEmail(email).getName();}
-
-
-
+        return userRepository.findByEmail(email).get().getName();
     }
+
 
     @GetMapping("/available/email/{email}")
     public boolean isEmailAvailable(@PathVariable("email") String email) {
