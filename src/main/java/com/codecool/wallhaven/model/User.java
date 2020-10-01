@@ -1,11 +1,15 @@
 package com.codecool.wallhaven.model;
 
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import javax.persistence.*;
 import java.util.List;
 
 
+@AllArgsConstructor
+@Builder
 @Data
 @NoArgsConstructor
 @Entity
@@ -30,11 +34,5 @@ public class User {
     @ElementCollection
     private List<Long> friends;
 
-
-    public User(String name, String password, String email) {
-        this.name = name;
-        this.password = password;
-        this.email = email;
-    }
 
 }
