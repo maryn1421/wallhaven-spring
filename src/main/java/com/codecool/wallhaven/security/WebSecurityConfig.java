@@ -1,6 +1,9 @@
 package com.codecool.wallhaven.security;
 
 
+import com.codecool.wallhaven.security.jwt.AuthEntryPointJwt;
+import com.codecool.wallhaven.security.jwt.AuthTokenFilter;
+import com.codecool.wallhaven.security.services.UserDetailsServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

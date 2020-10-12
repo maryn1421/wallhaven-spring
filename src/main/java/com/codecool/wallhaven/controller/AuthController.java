@@ -1,11 +1,24 @@
 package com.codecool.wallhaven.controller;
 
 
+import com.codecool.wallhaven.model.ERole;
+import com.codecool.wallhaven.model.Role;
+import com.codecool.wallhaven.model.User;
 import com.codecool.wallhaven.payLoad.request.LoginRequest;
+import com.codecool.wallhaven.payLoad.request.SignUpRequest;
+import com.codecool.wallhaven.payLoad.response.JwtResponse;
+import com.codecool.wallhaven.payLoad.response.MessageResponse;
 import com.codecool.wallhaven.repository.RoleRepository;
 import com.codecool.wallhaven.repository.UserRepository;
+import com.codecool.wallhaven.security.jwt.JwtUtils;
+import com.codecool.wallhaven.security.services.UserDetailsImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -55,8 +68,8 @@ public class AuthController {
     }
 
     @PostMapping("/signup")
-    public ResponseEntity<?> registerUser(@Valid @RequestBody SignupRequest signUpRequest) {
-        if (userRepository.existsByUsername(signUpRequest.getUsername())) {
+    public ResponseEntity<?> registerUser(@Valid @RequestBody SignUpRequest signUpRequest) {
+        if (userRepository.existsByName(signUpRequest.getUsername())) {
             return ResponseEntity
                     .badRequest()
                     .body(new MessageResponse("Error: Username is already taken!"));
