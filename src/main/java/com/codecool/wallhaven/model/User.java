@@ -1,28 +1,38 @@
 package com.codecool.wallhaven.model;
 
-public class User extends BaseModel {
-     private String password;
-     private String email;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+import javax.persistence.*;
+import java.util.List;
 
-    public User(String name, String password, String email) {
-        super(name);
-        this.password = password;
-        this.email = email;
-    }
 
-    public String getPassword() {
-        return password;
-    }
+@AllArgsConstructor
+@Builder
+@Data
+@NoArgsConstructor
+@Entity
+@Table(name = "users")
+public class User {
 
-    public void setPassword(String password) {
-        this.password = password;
-    }
+    @Id
+    @GeneratedValue
+    private Long id;
 
-    public void setEmail(String email) {
-        this.email = email;
-    }
+    @Column(columnDefinition = "text")
+    private String name;
 
-    public String getEmail() {
-        return email;
-    }
+
+    @Column(columnDefinition = "text")
+    private String password;
+
+    @Column(columnDefinition = "text")
+    private String email;
+
+
+    @ElementCollection
+    private List<Long> friends;
+
+
 }
