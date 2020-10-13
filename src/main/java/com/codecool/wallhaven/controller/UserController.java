@@ -68,6 +68,18 @@ public class UserController {
         }
     }
 
+    @PostMapping("/removeFriend/{userId}/{friendId}")
+    @PreAuthorize("hasRole('USER') or hasRole('MODERATOR') or hasRole('ADMIN')")
+    public void removeFriend(@PathVariable String userId, @PathVariable String friendId) {
+        Optional<User> user = userRepository.findById(Long.parseLong(userId));
+        Optional<User> friend = userRepository.findById(Long.parseLong(friendId));
+
+        if(user.isPresent() && friend.isPresent()) {
+            user.get().getFriends().remove(friend.get().getId());
+            userRepository.save(user.get());
+        }
+    }
+
     @GetMapping("/friends/{id}")
     @PreAuthorize("hasRole('USER') or hasRole('MODERATOR') or hasRole('ADMIN')")
     public List<User> getFriends(@PathVariable("id") String id) {
