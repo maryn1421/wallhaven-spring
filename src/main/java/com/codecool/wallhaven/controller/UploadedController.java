@@ -38,7 +38,6 @@ public class UploadedController {
 
 
     @GetMapping("/uploaded/{id}")
-    @PreAuthorize("hasRole('USER') or hasRole('MODERATOR') or hasRole('ADMIN')")
     public List<UploadedWallpaper> getUploaded(@PathVariable("id") String id) {
        Optional<User> user =  userRepository.findById(Long.parseLong(id));
        if (user.isPresent()) {
@@ -65,14 +64,12 @@ public class UploadedController {
     }
 
     @GetMapping("/image/{name}")
-    @PreAuthorize("hasRole('USER') or hasRole('MODERATOR') or hasRole('ADMIN')")
     public ResponseEntity<byte[]> getImage1(@PathVariable String name) throws IOException{
         File img = new File("src/main/resources/images/" + name);
         return ResponseEntity.ok().contentType(MediaType.valueOf(FileTypeMap.getDefaultFileTypeMap().getContentType(img))).body(Files.readAllBytes(img.toPath()));
     }
 
     @RequestMapping(method = RequestMethod.POST, value = "/uploadwallpaper/{id}")
-    @PreAuthorize("hasRole('USER') or hasRole('MODERATOR') or hasRole('ADMIN')")
     public String uploadWallpaper(@PathVariable("id") String id, @RequestParam("file") MultipartFile file) {
 
         String absolutePathDirectory = "src/main/resources/images/";
