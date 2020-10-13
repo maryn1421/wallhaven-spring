@@ -4,6 +4,7 @@ import com.codecool.wallhaven.model.User;
 import com.codecool.wallhaven.repository.UserRepository;
 import com.codecool.wallhaven.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
@@ -23,6 +24,7 @@ public class UserController {
 
 
     @GetMapping("/users/{id}")
+    @PreAuthorize("hasRole('USER') or hasRole('MODERATOR') or hasRole('ADMIN')")
     public List<User> getAvailableUsers(@PathVariable("id") String id) {
         User byId = userRepository.findById(Long.parseLong(id)).get();
         List<Long> friendIds = byId.getFriends();
@@ -47,12 +49,14 @@ public class UserController {
 
 
     @PostMapping("/test")
+    @PreAuthorize("hasRole('USER') or hasRole('MODERATOR') or hasRole('ADMIN')")
     public String test(@RequestBody User user) {
         userRepository.save(user);
         return "halika";
     }
 
     @PostMapping("/addFriend/{userId}/{friendId}")
+    @PreAuthorize("hasRole('USER') or hasRole('MODERATOR') or hasRole('ADMIN')")
     public void addFriend(@PathVariable String userId, @PathVariable String friendId) {
         System.out.println(userId);
         Optional<User> user = userRepository.findById(Long.parseLong(userId));
@@ -65,6 +69,7 @@ public class UserController {
     }
 
     @GetMapping("/friends/{id}")
+    @PreAuthorize("hasRole('USER') or hasRole('MODERATOR') or hasRole('ADMIN')")
     public List<User> getFriends(@PathVariable("id") String id) {
         Optional<User> byId = userRepository.findById(Long.parseLong(id));
         if (byId.isPresent()) {
@@ -84,11 +89,13 @@ public class UserController {
 
 
     @GetMapping("/alluser")
+    @PreAuthorize("hasRole('USER') or hasRole('MODERATOR') or hasRole('ADMIN')")
     public List<User> getAllUser() {
         return userRepository.findAll();
     }
 
     @PostMapping("/register")
+    @PreAuthorize("hasRole('USER') or hasRole('MODERATOR') or hasRole('ADMIN')")
     public String registerUser(@RequestBody User user) {
         userRepository.save(user);
         return "user";
@@ -96,15 +103,18 @@ public class UserController {
     }
 
     @GetMapping("/profile/{id}")
+    @PreAuthorize("hasRole('USER') or hasRole('MODERATOR') or hasRole('ADMIN')")
     public List<User> getFriendsById(@PathVariable("id") String id) {
         return userService.getFriendsById(Long.parseLong(id));
     }
 
     @GetMapping("/data/{id}")
+    @PreAuthorize("hasRole('USER') or hasRole('MODERATOR') or hasRole('ADMIN')")
     public User getUserDataById(@PathVariable("id") String id) {
         return userRepository.findById(Long.parseLong(id)).get();
     }
     @GetMapping("/friend/{id}")
+    @PreAuthorize("hasRole('USER') or hasRole('MODERATOR') or hasRole('ADMIN')")
     public Optional<User> getUserById(@PathVariable("id") String id) {
         return userRepository.findById(Long.parseLong(id));
     }
@@ -112,24 +122,28 @@ public class UserController {
 
 
     @GetMapping("/username/{email}")
+    @PreAuthorize("hasRole('USER') or hasRole('MODERATOR') or hasRole('ADMIN')")
     public String getUsernameByEmail(@PathVariable("email") String email) {
         return userRepository.findByEmail(email).get().getName();
     }
 
 
     @GetMapping("/available/email/{email}")
+    @PreAuthorize("hasRole('USER') or hasRole('MODERATOR') or hasRole('ADMIN')")
     public boolean isEmailAvailable(@PathVariable("email") String email) {
         Optional<User> byEmail = userRepository.findByEmail(email);
         return byEmail.isPresent();
     }
 
     @GetMapping("/available/name/{name}")
+    @PreAuthorize("hasRole('USER') or hasRole('MODERATOR') or hasRole('ADMIN')")
     public boolean isNameAvailable(@PathVariable("name") String name) {
         Optional<User> username = userRepository.findByName(name);
         return username.isPresent();
     }
 
     @PostMapping("/update/name/{name}/{id}")
+    @PreAuthorize("hasRole('USER') or hasRole('MODERATOR') or hasRole('ADMIN')")
     public String updateName(@PathVariable("name") String name, @PathVariable("id") String id) {
         Optional<User> username = userRepository.findByName(name);
         if (username.isEmpty()) {
@@ -143,6 +157,7 @@ public class UserController {
     }
 
     @PostMapping("/update/email/{email}/{id}")
+    @PreAuthorize("hasRole('USER') or hasRole('MODERATOR') or hasRole('ADMIN')")
     public String updateEmail(@PathVariable("email")String email, @PathVariable("id") String id) {
         Optional<User> user1 = userRepository.findByEmail(email);
         if (user1.isEmpty()) {
