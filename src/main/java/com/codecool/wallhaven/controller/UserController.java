@@ -5,6 +5,7 @@ import com.codecool.wallhaven.repository.UserRepository;
 import com.codecool.wallhaven.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
@@ -21,6 +22,9 @@ public class UserController {
 
     @Autowired
     UserService userService;
+
+    @Autowired
+    PasswordEncoder encoder;
 
 
     @GetMapping("/users/{id}")
@@ -181,6 +185,19 @@ public class UserController {
         }
         return "update was successful";
     }
+
+    @PostMapping("/update/password/{newPassword}/{id}")
+    @PreAuthorize("hasRole('USER') or hasRole('MODERATOR') or hasRole('ADMIN')")
+    public String updatePassword(@PathVariable String newPassword, @PathVariable String id) {
+        Optional<User> user1 = userRepository.findById(Long.parseLong(id));
+            if (user1.isPresent()){
+                user1.get().setPassword(encoder.encode(newPassword));
+                userRepository.save(user1.get());
+            }
+        return "update was successful";
+    }
+
+
 
 
     @GetMapping("/login/{email}/{password}")
