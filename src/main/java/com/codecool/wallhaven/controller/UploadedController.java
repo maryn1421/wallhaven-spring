@@ -49,6 +49,9 @@ public class UploadedController {
     @GetMapping("/image/{name}")
     public ResponseEntity<byte[]> getImage1(@PathVariable String name) throws IOException {
         File img = new File("src/main/resources/images/" + name);
+        if (!img.exists()) {
+            img = new File("src/main/resources/images/notfound.jpg");
+        }
         return ResponseEntity.ok().contentType(MediaType.valueOf(FileTypeMap.getDefaultFileTypeMap().getContentType(img))).body(Files.readAllBytes(img.toPath()));
     }
 
