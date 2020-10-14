@@ -39,7 +39,6 @@ public class UserController {
             fri.ifPresent(friends::add);
         });
 
-
         List<User> allUser = userRepository.findAll();
         List<User> suggested = new ArrayList<>();
         allUser.forEach(user -> {
@@ -49,14 +48,6 @@ public class UserController {
         });
         return suggested;
 
-    }
-
-
-    @PostMapping("/test")
-    @PreAuthorize("hasRole('USER') or hasRole('MODERATOR') or hasRole('ADMIN')")
-    public String test(@RequestBody User user) {
-        userRepository.save(user);
-        return "halika";
     }
 
     @PostMapping("/addFriend/{userId}/{friendId}")
@@ -78,7 +69,7 @@ public class UserController {
         Optional<User> user = userRepository.findById(Long.parseLong(userId));
         Optional<User> friend = userRepository.findById(Long.parseLong(friendId));
 
-        if(user.isPresent() && friend.isPresent()) {
+        if (user.isPresent() && friend.isPresent()) {
             user.get().getFriends().remove(friend.get().getId());
             userRepository.save(user.get());
         }
@@ -96,12 +87,11 @@ public class UserController {
                 Optional<User> fri = userRepository.findById(id1);
                 fri.ifPresent(friends::add);
             });
-           return friends;
+            return friends;
         } else {
             return new ArrayList<>();
         }
     }
-
 
 
     @GetMapping("/alluser")
@@ -129,12 +119,12 @@ public class UserController {
     public User getUserDataById(@PathVariable("id") String id) {
         return userRepository.findById(Long.parseLong(id)).get();
     }
+
     @GetMapping("/friend/{id}")
     @PreAuthorize("hasRole('USER') or hasRole('MODERATOR') or hasRole('ADMIN')")
     public Optional<User> getUserById(@PathVariable("id") String id) {
         return userRepository.findById(Long.parseLong(id));
     }
-
 
 
     @GetMapping("/username/{email}")
@@ -164,7 +154,7 @@ public class UserController {
         Optional<User> username = userRepository.findByName(name);
         if (username.isEmpty()) {
             Optional<User> user = userRepository.findById(Long.parseLong(id));
-            if (user.isPresent()){
+            if (user.isPresent()) {
                 user.get().setName(name);
                 userRepository.save(user.get());
             }
@@ -174,11 +164,11 @@ public class UserController {
 
     @PostMapping("/update/email/{email}/{id}")
     @PreAuthorize("hasRole('USER') or hasRole('MODERATOR') or hasRole('ADMIN')")
-    public String updateEmail(@PathVariable("email")String email, @PathVariable("id") String id) {
+    public String updateEmail(@PathVariable("email") String email, @PathVariable("id") String id) {
         Optional<User> user1 = userRepository.findByEmail(email);
         if (user1.isEmpty()) {
             Optional<User> user = userRepository.findById(Long.parseLong(id));
-            if (user.isPresent()){
+            if (user.isPresent()) {
                 user.get().setEmail(email);
                 userRepository.save(user.get());
             }
@@ -190,24 +180,10 @@ public class UserController {
     @PreAuthorize("hasRole('USER') or hasRole('MODERATOR') or hasRole('ADMIN')")
     public String updatePassword(@PathVariable String newPassword, @PathVariable String id) {
         Optional<User> user1 = userRepository.findById(Long.parseLong(id));
-            if (user1.isPresent()){
-                user1.get().setPassword(encoder.encode(newPassword));
-                userRepository.save(user1.get());
-            }
+        if (user1.isPresent()) {
+            user1.get().setPassword(encoder.encode(newPassword));
+            userRepository.save(user1.get());
+        }
         return "update was successful";
     }
-
-
-
-
-    @GetMapping("/login/{email}/{password}")
-    public boolean login1(@PathVariable("email") String email, @PathVariable("password") String password){
-        return userRepository.findByEmailAndAndPassword(email, password).isPresent();
-    }
-
-    @GetMapping("/login/{email}")
-    public User getUserByEmail(@PathVariable("email") String email) {
-        return userRepository.findByEmail(email).get();
-    }
-
 }

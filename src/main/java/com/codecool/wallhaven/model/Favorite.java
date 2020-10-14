@@ -18,12 +18,11 @@ import javax.validation.constraints.NotNull;
 public class Favorite {
 
     @Id
-    @GeneratedValue(strategy= GenerationType.TABLE)
+    @GeneratedValue(strategy = GenerationType.TABLE)
     private Long id;
 
     @NotNull
     private String wallpaperId;
-
 
 
     @NotNull

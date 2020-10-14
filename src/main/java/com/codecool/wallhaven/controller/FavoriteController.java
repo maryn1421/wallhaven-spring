@@ -53,13 +53,12 @@ public class FavoriteController {
 
     @GetMapping("/favorite/{id}/{wallpaper_id}")
     @PreAuthorize("hasRole('USER') or hasRole('MODERATOR') or hasRole('ADMIN')")
-    public boolean isWallpaperFavorite(@PathVariable("id") String  id, @PathVariable("wallpaper_id") String wallpaperId) {
+    public boolean isWallpaperFavorite(@PathVariable("id") String id, @PathVariable("wallpaper_id") String wallpaperId) {
         Optional<User> byId = userRepository.findById(Long.parseLong(id));
         if (byId.isPresent()) {
             Optional<Favorite> favorite = favoriteRepository.findByWallpaperIdAndUserId(wallpaperId, byId.get());
             return favorite.isPresent();
-        }
-        else return false;
+        } else return false;
     }
 
 }
