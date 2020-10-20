@@ -6,6 +6,7 @@ import com.codecool.wallhaven.model.User;
 import com.codecool.wallhaven.repository.FavoriteRepository;
 import com.codecool.wallhaven.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
@@ -22,19 +23,23 @@ public class FavoriteController {
     @Autowired
     UserRepository userRepository;
 
+
     @GetMapping("/profile/favourites/{id}")
+    @PreAuthorize("hasRole('USER') or hasRole('MODERATOR') or hasRole('ADMIN')")
     public List<Favorite> getFavouritesByUserID(@PathVariable("id") String id) {
         Optional<User> user = userRepository.findById(Long.parseLong(id));
         return user.map(value -> favoriteRepository.findAllByUserId(value)).orElse(new ArrayList<>());
     }
 
     @GetMapping("/friend/favourites/{id}")
+    @PreAuthorize("hasRole('USER') or hasRole('MODERATOR') or hasRole('ADMIN')")
     public List<Favorite> getFriendsFavouritesByUserID(@PathVariable("id") String id) {
         Optional<User> user = userRepository.findById(Long.parseLong(id));
         return user.map(value -> favoriteRepository.findAllByUserId(value)).orElse(new ArrayList<>());
     }
 
     @PostMapping("/addfavorite/{id}/{wallpaper_id}")
+    @PreAuthorize("hasRole('USER') or hasRole('MODERATOR') or hasRole('ADMIN')")
     public String addToFavorite(@PathVariable("id") String id, @PathVariable("wallpaper_id") String wallpaperId) {
         Optional<User> user = userRepository.findById(Long.parseLong(id));
         if (user.isPresent()) {
@@ -47,13 +52,13 @@ public class FavoriteController {
 
 
     @GetMapping("/favorite/{id}/{wallpaper_id}")
-    public boolean isWallpaperFavorite(@PathVariable("id") String  id, @PathVariable("wallpaper_id") String wallpaperId) {
+    @PreAuthorize("hasRole('USER') or hasRole('MODERATOR') or hasRole('ADMIN')")
+    public boolean isWallpaperFavorite(@PathVariable("id") String id, @PathVariable("wallpaper_id") String wallpaperId) {
         Optional<User> byId = userRepository.findById(Long.parseLong(id));
         if (byId.isPresent()) {
             Optional<Favorite> favorite = favoriteRepository.findByWallpaperIdAndUserId(wallpaperId, byId.get());
             return favorite.isPresent();
-        }
-        else return false;
+        } else return false;
     }
 
 }

@@ -11,6 +11,7 @@ import org.apache.maven.surefire.shade.org.apache.commons.io.IOUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -28,7 +29,6 @@ import java.util.*;
 @CrossOrigin(origins = "*", allowedHeaders = "*")
 public class UploadedController {
 
-
     @Autowired
     UserRepository userRepository;
 
@@ -38,32 +38,20 @@ public class UploadedController {
 
     @GetMapping("/uploaded/{id}")
     public List<UploadedWallpaper> getUploaded(@PathVariable("id") String id) {
-       Optional<User> user =  userRepository.findById(Long.parseLong(id));
-       if (user.isPresent()) {
-            return uploadedWallpaperRepository.findAllByUserId(user.get());
-       }
-       else {
-           return new ArrayList<>();
-       }
-    }
-
-    @PostMapping("/addwallpaper/{id}")
-    public String addPicture(@PathVariable("id") String id, @RequestBody String image){
-        image = image.replace("\"{", "");
-        image = image.replace("}", "");
-        image = image.replace("{\"image\":", "");
-        image = image.replace("\"", "");
         Optional<User> user = userRepository.findById(Long.parseLong(id));
         if (user.isPresent()) {
-            UploadedWallpaper uploadedWallpaper = UploadedWallpaper.builder().Link(image).userId(user.get()).build();
-            uploadedWallpaperRepository.save(uploadedWallpaper);
+            return uploadedWallpaperRepository.findAllByUserId(user.get());
+        } else {
+            return new ArrayList<>();
         }
-        return "post was successfully";
     }
 
     @GetMapping("/image/{name}")
-    public ResponseEntity<byte[]> getImage1(@PathVariable String name) throws IOException{
+    public ResponseEntity<byte[]> getImage1(@PathVariable String name) throws IOException {
         File img = new File("src/main/resources/images/" + name);
+        if (!img.exists()) {
+            img = new File("src/main/resources/images/notfound.jpg");
+        }
         return ResponseEntity.ok().contentType(MediaType.valueOf(FileTypeMap.getDefaultFileTypeMap().getContentType(img))).body(Files.readAllBytes(img.toPath()));
     }
 
@@ -81,7 +69,6 @@ public class UploadedController {
 
                 File dest = new File(filePath);
                 file.transferTo(dest.toPath());
-                System.out.println("success");
 
                 Optional<User> user = userRepository.findById(Long.parseLong(id));
                 if (user.isPresent()) {
@@ -89,14 +76,10 @@ public class UploadedController {
                     uploadedWallpaperRepository.save(uploadedWallpaper);
                 }
                 return "success";
-            }
-            catch (Exception ex) {
-                System.out.println(ex);
+            } catch (Exception ex) {
                 return "Exception error";
             }
-        }
-        else {
-            System.out.println("error");
+        } else {
             return "Error";
         }
     }

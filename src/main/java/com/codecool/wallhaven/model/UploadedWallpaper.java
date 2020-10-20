@@ -17,10 +17,8 @@ import javax.validation.constraints.NotNull;
 @Table(name = "uploaded_wallpaper")
 public class UploadedWallpaper {
 
-
-
     @Id
-    @GeneratedValue(strategy= GenerationType.TABLE)
+    @GeneratedValue(strategy = GenerationType.TABLE)
     private Long id;
 
     private String Link;
